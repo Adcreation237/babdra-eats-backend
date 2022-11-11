@@ -116,7 +116,23 @@ class CategoriesController extends BaseController
      */
     public function update(Request $request, Categorie $categorie)
     {
-        //
+
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
+            'name' => 'required',
+            'link_img' => 'required'
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
+        $categorie->name = $input['name'];
+        $categorie->detail = $input['detail'];
+        $categorie->save();
+
+        return $this->sendResponse(new CategoriesResource($categorie), 'Category updated successfully.');
     }
 
     /**
@@ -127,6 +143,10 @@ class CategoriesController extends BaseController
      */
     public function destroy(Categorie $categorie)
     {
-        //
+        $categorie->delete();
+
+        return $this->sendResponse([], 'Category deleted successfully.');
     }
+
+    //https://www.itsolutionstuff.com/post/laravel-9-rest-api-authentication-using-sanctum-tutorialexample.html
 }
