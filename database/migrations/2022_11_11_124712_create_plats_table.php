@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('iduser');
             $table->unsignedBigInteger('idCat');
+            $table->string('img_link');
             $table->string('name');
             $table->string('prix');
             $table->string('ingredients');

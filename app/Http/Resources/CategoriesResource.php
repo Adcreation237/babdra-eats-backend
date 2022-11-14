@@ -14,14 +14,13 @@ class CategoriesResource extends JsonResource
      */
     public function toArray($request)
     {
-
         return [
-            'id' => $this->id,
-            'iduser' => $this->iduser,
-            'name' => $this->name,
-            'link_img' => $this->link_img,
-            'created_at' => $this->created_at->format('d/m/Y'),
-            'updated_at' => $this->updated_at->format('d/m/Y'),
+            "id" => $this->id,
+            "iduser" => $this->iduser,
+            "name" => $this->name,
+            "link_img" => $this->link_img,
+            "created_at" => $this->created_at->format('d/m/Y'),
+            "updated_at" => $this->updated_at->format('d/m/Y'),
         ];
     }
 }

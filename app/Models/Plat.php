@@ -16,6 +16,7 @@ class Plat extends Model
     protected $fillable = [
         'iduser',
         'idCat',
+        'img_link',
         'name',
         'prix',
         'ingredients',

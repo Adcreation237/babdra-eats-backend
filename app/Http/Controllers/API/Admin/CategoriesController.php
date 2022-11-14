@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API\Admin;
 
 use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AllResources;
+use App\Http\Resources\CategorieResource;
 use App\Http\Resources\CategoriesResource;
 use App\Models\Categorie;
 use Illuminate\Http\Request;
@@ -16,9 +18,9 @@ class CategoriesController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index()
     {
-        $categories = Categorie::where('iduser','=',$id)->get();
+        $categories = Categorie::get();
 
         if ($categories->isEmpty()) {
             return $this->sendError('not categories found', $categories->errors());
@@ -85,15 +87,25 @@ class CategoriesController extends BaseController
      * @param  \App\Models\Categorie  $categorie
      * @return \Illuminate\Http\Response
      */
-    public function show($iduser, $id)
+    public function show(Request $request, $categorie)
     {
-        $Categories = Categorie::where('id','=',$id)->where('iduser','=',$iduser)->get();
+        $input = $request->all();
 
-        if (is_null($Categories)) {
+        $validator = Validator::make($input, [
+            'iduser' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
+        $Categories = Categorie::where('id','=',$categorie)->where('iduser','=',$input['iduser'])->get();
+
+        if ($Categories->isEmpty()) {
             return $this->sendError('Category not found.');
         }
 
-        return $this->sendResponse(new CategoriesResource($Categories), 'Categories retrieved successfully.');
+        return $this->sendResponse(new AllResources($Categories), 'Categories retrieved successfully.');
     }
 
     /**
@@ -148,5 +160,4 @@ class CategoriesController extends BaseController
         return $this->sendResponse([], 'Category deleted successfully.');
     }
 
-    //https://www.itsolutionstuff.com/post/laravel-9-rest-api-authentication-using-sanctum-tutorialexample.html
 }
