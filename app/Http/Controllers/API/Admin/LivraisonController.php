@@ -1,29 +1,33 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Admin;
 
+use App\Http\Controllers\API\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AllResources;
-use App\Models\User;
+use App\Models\Livraison;
 use Illuminate\Http\Request;
 
-class UserController extends BaseController
+class LivraisonController extends BaseController
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        $user = User::get();
+        $livraison = Livraison::join('plats', 'livraisons.plats', '=', 'plats.id')
+            ->join('users', 'livraisons.iduser', '=', 'users.id')
+            ->where('livraisons.idresto', '=', $id)
+            ->select('livraisons.*', 'plats.img_link', 'plats.nameplats', 'users.name')
+            ->get();
 
-        if ($user->isEmpty()) {
-            return $this->sendError('not user found', $user->errors());
+        if ($livraison->isEmpty()) {
+            return $this->sendError("Vous n'avez pas de livraison", '$livraison->errors()');
         } else {
-            return $this->sendResponse(AllResources::collection($user), 'user retrieved successfully.');
+            return $this->sendResponse(AllResources::collection($livraison), 'livraison recuperées avec succès.');
         }
-
     }
 
     /**
@@ -42,7 +46,7 @@ class UserController extends BaseController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($id)
     {
         //
     }
@@ -50,30 +54,21 @@ class UserController extends BaseController
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Livraison  $livraison
      * @return \Illuminate\Http\Response
      */
-    public function showAdmin($id)
+    public function show(Livraison $livraison)
     {
-        $user = User::join('entreprises', 'users.id', '=', 'entreprises.iduser')
-        ->where('users.id', '=', $id)
-        ->select('users.*', 'entreprises.*')
-        ->get();
-
-        if ($user->isEmpty()) {
-            return $this->sendError('Utilisateur inexistant.');
-        }
-
-        return $this->sendResponse(new AllResources($user), 'Connecté(e) avec succès.');
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Livraison  $livraison
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit(Livraison $livraison)
     {
         //
     }
@@ -82,10 +77,10 @@ class UserController extends BaseController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Livraison  $livraison
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, Livraison $livraison)
     {
         //
     }
@@ -93,10 +88,10 @@ class UserController extends BaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\User  $user
+     * @param  \App\Models\Livraison  $livraison
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy(Livraison $livraison)
     {
         //
     }

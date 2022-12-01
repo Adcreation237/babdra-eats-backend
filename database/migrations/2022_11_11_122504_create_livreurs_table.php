@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('livreurs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('iduser');
+            $table->string('link_img');
             $table->string('num_cni');
             $table->string('cni_img_1');
             $table->string('cni_img_2');

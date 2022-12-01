@@ -9,9 +9,9 @@ use App\Http\Resources\CategorieResource;
 use App\Http\Resources\CategoriesResource;
 use App\Models\Categorie;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Validator as FacadesValidator;
 
-class CategoriesController extends Controller
+class CategoriesController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -23,7 +23,7 @@ class CategoriesController extends Controller
         $categories = Categorie::get();
 
         if ($categories->isEmpty()) {
-            return $this->sendError('not categories found', $categories->errors());
+            return $this->sendError('not categories found', '$categories->errors()');
         } else {
             return $this->sendResponse(CategoriesResource::collection($categories), 'categories retrieved successfully.');
         }
@@ -64,11 +64,8 @@ class CategoriesController extends Controller
     public function store(Request $request)
     {
 
-        $input = $request->all();
-
-        $validator = Validator::make($input, [
-            'iduser' => 'required',
-            'name' => 'required',
+        $validator = FacadesValidator::make($request->all(), [
+            'namecat' => 'required',
             'link_img' => 'required'
         ]);
 
@@ -76,9 +73,21 @@ class CategoriesController extends Controller
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $categorie = Categorie::create($input);
+        $input = $request->all();
+        $categorie = new Categorie();
 
-        return $this->sendResponse(new CategoriesResource($categorie), 'Category created successfully.');
+        $categorie->namecat = $input['namecat'];
+        $categorie->link_img = $input['link_img'];
+        $saveCategorie = $categorie->save();
+
+        if ($saveCategorie) {
+            return $this->sendResponse(new CategoriesResource($categorie), 'Catégotie créée avec succès.');
+        } else {
+            return $this->sendError('Creation error.', '$categorie->errors()');
+        }
+        
+
+        
     }
 
     /**
@@ -91,7 +100,7 @@ class CategoriesController extends Controller
     {
         $input = $request->all();
 
-        $validator = Validator::make($input, [
+        $validator = FacadesValidator::make($input, [
             'iduser' => 'required',
         ]);
 
@@ -131,7 +140,7 @@ class CategoriesController extends Controller
 
         $input = $request->all();
 
-        $validator = Validator::make($input, [
+        $validator = FacadesValidator::make($input, [
             'name' => 'required',
             'link_img' => 'required'
         ]);

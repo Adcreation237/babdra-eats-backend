@@ -16,8 +16,9 @@ return new class extends Migration
         Schema::create('entreprises', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('iduser');
+            $table->string('link_img');
             $table->string('num_contribuable');
-            $table->string('type');
+            $table->string('typeentreprise');
             $table->string('heure_open');
             $table->string('heure_deliver');
             $table->timestamps();

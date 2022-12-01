@@ -17,14 +17,19 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('iduser');
             $table->unsignedBigInteger('idplat');
+            $table->unsignedBigInteger('idresto');
             $table->string('qte');
             $table->string('statut');
             $table->string('date');
             $table->string('heure');
+            $table->string('position');
+            $table->string('long');
+            $table->string('lat');
             $table->timestamps();
 
             $table->foreign('iduser')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('idplat')->references('id')->on('plats')->onDelete('cascade');
+            $table->foreign('idresto')->references('id')->on('users')->onDelete('cascade');
             Schema::enableForeignKeyConstraints();
         });
     }

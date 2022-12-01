@@ -15,13 +15,9 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('iduser');
-            $table->string('name');
+            $table->string('namecat');
             $table->string('link_img');
             $table->timestamps();
-
-            $table->foreign('iduser')->references('id')->on('users')->onDelete('cascade');
-            Schema::enableForeignKeyConstraints();
         });
     }
 
@@ -33,9 +29,5 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('categories');
-        Schema::create('categories', function (Blueprint $table) {
-            Schema::disableForeignKeyConstraints();
-            $table->dropForeign('categories_id_foreign');
-        });
     }
 };

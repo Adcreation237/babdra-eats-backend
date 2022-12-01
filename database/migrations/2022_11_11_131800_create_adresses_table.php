@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('adresses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('iduser');
-            $table->string('name');
+            $table->string('nameadresses');
             $table->string('long');
             $table->string('lat');
             $table->timestamps();

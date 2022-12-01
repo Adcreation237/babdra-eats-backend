@@ -1,7 +1,12 @@
 <?php
 
 use App\Http\Controllers\API\Admin\CategoriesController;
+use App\Http\Controllers\API\Admin\CommandesController;
+use App\Http\Controllers\API\Admin\LivraisonController;
+use App\Http\Controllers\API\Admin\PlatsController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\uploadController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,13 +24,35 @@ use Illuminate\Support\Facades\Route;
 
 Route::controller(AuthController::class)->group(function(){
     Route::post('/register', 'register');
+    Route::post('/signin', 'signin');
     Route::post('/login', 'login');
+    Route::post('/auth', 'auth');
 });
 
+Route::post('categories/store', [CategoriesController::class, 'store']);
+
 Route::middleware('auth:sanctum')->group( function () {
-    Route::get('/categories', [CategoriesController::class, 'index']);
-    Route::post('/categories', [CategoriesController::class, 'store']);
-    Route::get('/categories', [CategoriesController::class, 'show']);
-    Route::put('/categories/{categorie}', [CategoriesController::class, 'update']);
-    Route::delete('/categories/{categorie}', [CategoriesController::class, 'destroy']);
+
+    //Traitement de l'utilisateur Admin
+    Route::get('admin/user', [UserController::class, 'index']);
+    Route::get('admin/user/{user}', [UserController::class, 'showAdmin']);
+
+    //Traitement catégories Admin
+    Route::get('admin/Allcategories', [CategoriesController::class, 'index']);
+
+    
+    //Traitement catégories Admin
+    Route::get('admin/Myplat/{id}', [PlatsController::class, 'index']);
+    Route::post('admin/plat/store', [PlatsController::class, 'store']);
+    Route::post('admin/plat/delete/{id}', [PlatsController::class, 'destroy']);
+    Route::post('admin/plat/update/{id}', [PlatsController::class, 'edit']);
+
+    //Traitement Commandes Admin
+    Route::get('admin/Mycommandes/{id}', [CommandesController::class, 'index']);
+    Route::post('admin/Mycommandes/updatestatut/{id}/{statut}/{prix}', [CommandesController::class, 'edit']);
+
+    
+    //Traitement Livraison Admin
+    Route::get('admin/MyLivraison/{id}', [LivraisonController::class, 'index']);
+      
 });

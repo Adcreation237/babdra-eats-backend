@@ -21,8 +21,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('mot_de_passe');
             $table->string('phone');
-            $table->string('link_img');
-            $table->rememberToken();
+            $table->string('typeuser');
             $table->timestamps();
         });
     }

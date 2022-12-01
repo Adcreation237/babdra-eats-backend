@@ -16,16 +16,20 @@ return new class extends Migration
         Schema::create('livraisons', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('iduser');
-            $table->unsignedBigInteger('idlivreur');
-            $table->string('plats');
+            $table->unsignedBigInteger('idlivreur')->nullable();
+            $table->unsignedBigInteger('idresto');
+            $table->unsignedBigInteger('plats');
             $table->string('amount');
             $table->string('position');
             $table->string('long');
             $table->string('lat');
+            $table->string('statut')->default('encours');
             $table->timestamps();
 
             $table->foreign('iduser')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('idlivreur')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('idresto')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('plats')->references('id')->on('plats')->onDelete('cascade');
             Schema::enableForeignKeyConstraints();
         });
     }

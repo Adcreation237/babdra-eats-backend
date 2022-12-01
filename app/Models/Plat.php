@@ -17,7 +17,7 @@ class Plat extends Model
         'iduser',
         'idCat',
         'img_link',
-        'name',
+        'nameplats',
         'prix',
         'ingredients',
         'description',

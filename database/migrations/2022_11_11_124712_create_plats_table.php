@@ -18,10 +18,11 @@ return new class extends Migration
             $table->unsignedBigInteger('iduser');
             $table->unsignedBigInteger('idCat');
             $table->string('img_link');
-            $table->string('name');
+            $table->string('nameplats');
             $table->string('prix');
             $table->string('ingredients');
             $table->string('description');
+            $table->string('posted')->default(false);;
             $table->timestamps();
 
             $table->foreign('iduser')->references('id')->on('users')->onDelete('cascade');

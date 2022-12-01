@@ -16,6 +16,7 @@ class Commande extends Model
     protected $fillable = [
         'iduser',
         'idplat',
+        'idresto',
         'qte',
         'statut',
         'date',

@@ -16,6 +16,7 @@ class Livraison extends Model
     protected $fillable = [
         'iduser',
         'idlivreur',
+        'idresto',
         'plats',
         'amount',
         'position',
