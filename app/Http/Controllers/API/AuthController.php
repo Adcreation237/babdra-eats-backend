@@ -61,7 +61,7 @@ class AuthController extends BaseController
             return $this->sendResponse($success, 'User login successfully.');
         }
         else{
-            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+            return $this->sendError('Login Failed.', ['error'=>'Login Failed']);
         }
     }
 }

@@ -23,9 +23,9 @@ Route::controller(AuthController::class)->group(function(){
 });
 
 Route::middleware('auth:sanctum')->group( function () {
-    Route::get('/categories', CategoriesController::class, 'index');
-    Route::post('/categories', CategoriesController::class, 'store');
-    Route::get('/categories', CategoriesController::class, 'show');
-    Route::put('/categories/{categorie}', CategoriesController::class, 'update');
-    Route::delete('/categories/{categorie}', CategoriesController::class, 'destroy');
+    Route::get('/categories', [CategoriesController::class, 'index']);
+    Route::post('/categories', [CategoriesController::class, 'store']);
+    Route::get('/categories', [CategoriesController::class, 'show']);
+    Route::put('/categories/{categorie}', [CategoriesController::class, 'update']);
+    Route::delete('/categories/{categorie}', [CategoriesController::class, 'destroy']);
 });
