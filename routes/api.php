@@ -23,9 +23,11 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::controller(AuthController::class)->group(function(){
+    //admin
     Route::post('/register', 'register');
-    Route::post('/signin', 'signin');
     Route::post('/login', 'login');
+    //client
+    Route::post('/signin', 'signin');
     Route::post('/auth', 'auth');
 });
 
@@ -34,13 +36,15 @@ Route::post('categories/store', [CategoriesController::class, 'store']);
 Route::middleware('auth:sanctum')->group( function () {
 
     //Traitement de l'utilisateur Admin
-    Route::get('admin/user', [UserController::class, 'index']);
     Route::get('admin/user/{user}', [UserController::class, 'showAdmin']);
+    //Traitement de l'utilisateur Admin
+    Route::get('client/user/{user}', [UserController::class, 'showUser']);
+
 
     //Traitement catégories Admin
     Route::get('admin/Allcategories', [CategoriesController::class, 'index']);
 
-    
+
     //Traitement catégories Admin
     Route::get('admin/Myplat/{id}', [PlatsController::class, 'index']);
     Route::post('admin/plat/store', [PlatsController::class, 'store']);
@@ -51,8 +55,8 @@ Route::middleware('auth:sanctum')->group( function () {
     Route::get('admin/Mycommandes/{id}', [CommandesController::class, 'index']);
     Route::post('admin/Mycommandes/updatestatut/{id}/{statut}/{prix}', [CommandesController::class, 'edit']);
 
-    
+
     //Traitement Livraison Admin
     Route::get('admin/MyLivraison/{id}', [LivraisonController::class, 'index']);
-      
+
 });

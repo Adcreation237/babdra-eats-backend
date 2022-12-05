@@ -69,7 +69,7 @@ class AuthController extends BaseController
         } else {
             return $this->sendError('Registration Error.', '$saveUser->errors()$saveEntreprise->errors()');
         }
-        
+
     }
 
 
@@ -96,7 +96,7 @@ class AuthController extends BaseController
 
 
 
-    
+
     /**
      * Register api
      *
@@ -111,7 +111,6 @@ class AuthController extends BaseController
             'mot_de_passe' => 'required',
             'phone' => 'required',
             'typeuser' => 'required',
-            'deviceId' => 'required',
         ]);
 
         if($validator->fails()){
@@ -131,7 +130,7 @@ class AuthController extends BaseController
 
 
         if ($saveUser) {
-            $success['token'] =  $user->createToken($input['deviceId'])->plainTextToken;
+            $success['token'] =  $user->createToken('BabdraEatsClient')->plainTextToken;
             $success['id'] =  $user->id;
             $success['name'] =  $user->name;
 
@@ -139,7 +138,7 @@ class AuthController extends BaseController
         } else {
             return $this->sendError('Registration Error.', '$saveUser->errors()$saveEntreprise->errors()');
         }
-        
+
     }
 
     /**
@@ -152,7 +151,6 @@ class AuthController extends BaseController
         $validator = FacadesValidator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required',
-            'deviceId' => 'required',
         ]);
 
         if($validator->fails()){
@@ -161,7 +159,7 @@ class AuthController extends BaseController
 
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             $user = User::where('email', $request->email)->first();
-            $success['token'] =  $user->createToken($request->deviceId)->plainTextToken;
+            $success['token'] =  $user->createToken('BabdraEatsClient')->plainTextToken;
             $success['id'] =  $user->id;
             $success['name'] =  $user->name;
 

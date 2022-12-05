@@ -67,6 +67,17 @@ class UserController extends BaseController
         return $this->sendResponse(new AllResources($user), 'Connecté(e) avec succès.');
     }
 
+    public function showUser($id)
+    {
+        $user = User::where('users.id', '=', $id)->get();
+
+        if ($user->isEmpty()) {
+            return $this->sendError('Utilisateur inexistant.');
+        }
+
+        return $this->sendResponse(new AllResources($user), 'Connecté(e) avec succès.');
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
