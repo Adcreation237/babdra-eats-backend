@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\API\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Commande;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController;
-use App\Http\Resources\CommandesResource;
 use App\Http\Resources\AllResources;
 use App\Models\Livraison;
+use Illuminate\Support\Facades\Validator as FacadesValidator;
 
 class CommandesController extends BaseController
 {
@@ -23,6 +22,22 @@ class CommandesController extends BaseController
             ->join('users', 'commandes.iduser', '=', 'users.id')
             ->where('commandes.idresto', '=', $id)
             ->where('commandes.statut', '!=', 'annulee')
+            ->select('commandes.*', 'plats.img_link', 'plats.nameplats', 'plats.prix', 'users.name')
+            ->get();
+
+        if ($commandes->isEmpty()) {
+            return $this->sendError("Vous n'avez pas de commandes", '$commandes->errors()');
+        } else {
+            return $this->sendResponse(AllResources::collection($commandes), 'Commandes recuperées avec succès.');
+        }
+    }
+
+    public function comClient($id, $name)
+    {
+        $commandes = Commande::join('plats', 'commandes.idplat', '=', 'plats.id')
+            ->join('users', 'commandes.iduser', '=', 'users.id')
+            ->where('commandes.iduser', '=', $id)
+            ->where('commandes.statut', '=', $name)
             ->select('commandes.*', 'plats.img_link', 'plats.nameplats', 'plats.prix', 'users.name')
             ->get();
 
@@ -51,7 +66,42 @@ class CommandesController extends BaseController
      */
     public function store(Request $request)
     {
-        //
+        $validator = FacadesValidator::make($request->all(), [
+            'iduser' => 'required',
+            'idplat' => 'required',
+            'idresto' => 'required',
+            'qte' => 'required',
+            'statut' => 'required',
+            'date' => 'required',
+            'heure' => 'required',
+            'position' => 'required',
+            'long' => 'required',
+            'lat' => 'required',
+        ]);
+
+        if($validator->fails()){
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+        $input = $request->all();
+        $Command = new Commande();
+
+        $Command->iduser = $input['iduser'];
+        $Command->idplat = $input['idplat'];
+        $Command->idresto = $input['idresto'];
+        $Command->qte = $input['qte'];
+        $Command->statut = $input['statut'];
+        $Command->heure = $input['heure'];
+        $Command->date = $input['date'];
+        $Command->position = $input['position'];
+        $Command->long = $input['long'];
+        $Command->lat = $input['lat'];
+        $saveCommand = $Command->save();
+
+        if ($saveCommand) {
+            return $this->sendResponse(new AllResources($Command), 'Menu ajouté au panier avec succès.');
+        } else {
+            return $this->sendError('Creation error.', '$categorie->errors()');
+        }
     }
 
     /**
@@ -88,7 +138,7 @@ class CommandesController extends BaseController
             }
 
             $pieces = explode(" ", $prix);
-            
+
             $Livraison = new Livraison();
 
             $Livraison->iduser = $iduser;
@@ -101,7 +151,7 @@ class CommandesController extends BaseController
             $saveLivraison = $Livraison->save();
 
             if ($saveLivraison) {
-                
+
                 $commande = Commande::where('id', $id)
                 ->update(['statut' => $statut]);
                 return $this->sendResponse([], 'Opération effectuée avec succès.');
@@ -118,7 +168,7 @@ class CommandesController extends BaseController
             }
         }
 
-        
+
     }
 
     /**

@@ -8,6 +8,7 @@ use App\Http\Resources\AllResources;
 use App\Http\Resources\CategorieResource;
 use App\Http\Resources\CategoriesResource;
 use App\Models\Categorie;
+use App\Models\Plat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
 
@@ -29,6 +30,46 @@ class CategoriesController extends BaseController
         }
 
 
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Categorie  $categorie
+     * @return \Illuminate\Http\Response
+     */
+    public function show()
+    {
+        $categories = Categorie::limit(4)->get();
+
+        if (!$categories) {
+            return $this->sendError('not categories found', 'categories pas trouvées');
+        } else {
+            return $this->sendResponse(CategoriesResource::collection($categories), 'categories retrieved successfully.');
+        }
+    }
+
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Categorie  $categorie
+     * @return \Illuminate\Http\Response
+     */
+    public function showCat($id)
+    {
+        $categories = Categorie::join('plats', 'categories.id', '=', 'plats.idCat')
+            ->join('users', 'plats.iduser', '=', 'users.id')
+            ->where('categories.id','=', $id)
+            ->where('plats.posted','!=', '0')
+            ->select('plats.*', 'categories.namecat', 'users.id', 'users.name', 'users.email_verified_at')
+            ->get();
+
+        if (!$categories) {
+            return $this->sendError('not categories found', 'categories pas trouvées');
+        } else {
+            return $this->sendResponse(new AllResources($categories), 'plats categories retrieved successfully.');
+        }
     }
 
     /**
@@ -85,37 +126,9 @@ class CategoriesController extends BaseController
         } else {
             return $this->sendError('Creation error.', '$categorie->errors()');
         }
-        
 
-        
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Categorie  $categorie
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Request $request, $categorie)
-    {
-        $input = $request->all();
-
-        $validator = FacadesValidator::make($input, [
-            'iduser' => 'required',
-        ]);
-
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
-        }
-
-        $Categories = Categorie::where('id','=',$categorie)->where('iduser','=',$input['iduser'])->get();
-
-        if ($Categories->isEmpty()) {
-            return $this->sendError('Category not found.');
-        }
-
-        return $this->sendResponse(new AllResources($Categories), 'Categories retrieved successfully.');
-    }
 
     /**
      * Show the form for editing the specified resource.

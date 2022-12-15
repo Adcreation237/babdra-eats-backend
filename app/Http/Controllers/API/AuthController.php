@@ -83,11 +83,15 @@ class AuthController extends BaseController
     {
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             $user = User::where('email', $request->email)->first();
-            $success['token'] =  $user->createToken('BabdraEatsClient')->plainTextToken;
-            $success['id'] =  $user->id;
-            $success['name'] =  $user->name;
+            if($user->typeuser == 'entreprise'){
+                $success['token'] =  $user->createToken('BabdraEatsClient')->plainTextToken;
+                $success['id'] =  $user->id;
+                $success['name'] =  $user->name;
 
-            return $this->sendResponse($success, 'User login successfully.');
+                return $this->sendResponse($success, 'User login successfully.');
+            }else{
+                return $this->sendError("Vous n'êtes pas une entreprise !", ['error'=>"Vous n'êtes pas une entreprise !"]);
+            }
         }
         else{
             return $this->sendError('User not recognized !', ['error'=>'User not recognized !']);
@@ -159,11 +163,16 @@ class AuthController extends BaseController
 
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             $user = User::where('email', $request->email)->first();
-            $success['token'] =  $user->createToken('BabdraEatsClient')->plainTextToken;
-            $success['id'] =  $user->id;
-            $success['name'] =  $user->name;
+            if($user->typeuser == 'client'){
+                $success['token'] =  $user->createToken('BabdraEatsClient')->plainTextToken;
+                $success['id'] =  $user->id;
+                $success['name'] =  $user->name;
 
-            return $this->sendResponse($success, 'User login successfully.');
+                return $this->sendResponse($success, 'User login successfully.');
+            }else{
+                return $this->sendError("Vous n'êtes pas un client !", ['error'=>"Vous n'êtes pas un client !"]);
+            }
+
         }
         else{
             return $this->sendError('User not recognized !', ['error'=>'User not recognized !']);
